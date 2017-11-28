@@ -145,14 +145,14 @@ public class Interface extends Thread {
         String tempSender = "";
         String tempReceiver = "";
         for(int i : message.getSenderIp()) {
-            tempSender = String.valueOf(i) + ".";
+            tempSender += String.valueOf(i) + ".";
 
         }
         tempSender = tempSender.substring(0, tempSender.length() - 1);
         result += this.countZeroesIp(tempSender);
 
         for(int i : message.getReceiverIp()) {
-            tempReceiver = String.valueOf(i) + ".";
+            tempReceiver += String.valueOf(i) + ".";
         }
 
         tempReceiver = tempReceiver.substring(0, tempReceiver.length() - 1);
@@ -160,11 +160,11 @@ public class Interface extends Thread {
 
         result += String.valueOf(message.getAction());
 
-        String tempActionIp = "";
+        String tempActionIp = "000";
 
         if(message.getAction() <= 2 && message.getAction() >= 1) {
             for (int i : message.getActionIp()) {
-                tempActionIp = String.valueOf(i) + ".";
+                tempActionIp += String.valueOf(i) + ".";
 
             }
 
@@ -203,10 +203,10 @@ public class Interface extends Thread {
                 offset = offset + 3;
 
             }
-            message = stringMessage.substring(37, stringMessage.length() - 1);
+            message = stringMessage.substring(37, stringMessage.length());
 
         } else
-            message = stringMessage.substring(25, stringMessage.length() - 1);
+            message = stringMessage.substring(28, stringMessage.length());
 
         return new Message(senderIp, receiverIp, action, actionIp, message);
 

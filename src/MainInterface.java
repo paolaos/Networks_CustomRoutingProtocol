@@ -19,7 +19,7 @@ public class MainInterface {
         Thread thread = new Interface(localNetworkPort, inbox);
         thread.start();
         Interface interfac = new Interface(ipVirtualAddress, macAddress, inbox, routerMacAddress);
-        interfac.wakeUp();
+
 
         System.out.println("Presione 1 para mandar un mensaje, o bien presione 0 para anticipar un mensaje");
         int response = scanner.nextInt();
@@ -40,6 +40,7 @@ public class MainInterface {
             interfac.sendMessage(ipReceiver, response, actionIp, body);
 
         }
+        interfac.wakeUp();
 
         /*int[] senderIp = {123,45,67,7};
         int[] receiverIp = {123,45,67,8};
