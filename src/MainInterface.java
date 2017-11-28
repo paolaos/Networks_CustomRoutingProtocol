@@ -15,17 +15,38 @@ public class MainInterface {
         String routerMacAddress = scanner.next();
         System.out.println("Listo!");
 
-
-        int[] senderIp = {123,45,67,7};
-        int[] receiverIp = {123,45,67,8};
-        int[] actionIp = {};
-        Message message = new Message(senderIp, receiverIp, 3, actionIp, "Hola!");
-        Envelope envelope = new ExternalEnvelope("Legos1", "Bolinchas.Kevin", message);
         ArrayDeque<Envelope> inbox = new ArrayDeque<>();
-        inbox.add(envelope);
         Thread thread = new Interface(localNetworkPort, inbox);
         thread.start();
         Interface interfac = new Interface(ipVirtualAddress, macAddress, inbox, routerMacAddress);
         interfac.wakeUp();
+
+        System.out.println("Presione 1 para mandar un mensaje, o bien presione 0 para anticipar un mensaje");
+        int response = scanner.nextInt();
+        if(response == 1) {
+            System.out.println("Escriba la dirección IP virtual de la persona a la que le quiere mandar un mensaje");
+            String ipReceiver = scanner.next();
+            System.out.println("Diga el número de acción de su mensaje ");
+            response = scanner.nextInt();
+            String actionIp = "";
+            if(response == 1 || response == 2) {
+                System.out.println("Escriba la dirección IP virtual de la acción de mensaje");
+                actionIp = scanner.next();
+
+            }
+
+            System.out.println("Finalmente, escriba el cuerpo del mensaje, alfanumérico y sin sobrepasarse de los 1200 caracteres");
+            String body = scanner.next();
+            interfac.sendMessage(ipReceiver, response, actionIp, body);
+
+        }
+
+        /*int[] senderIp = {123,45,67,7};
+        int[] receiverIp = {123,45,67,8};
+        int[] actionIp = {};
+        Message message = new Message(senderIp, receiverIp, 3, actionIp, "Hola!");
+        Envelope envelope = new ExternalEnvelope("Legos1", "Bolinchas.Kevin", message);
+        inbox.add(envelope);*/
+
     }
 }

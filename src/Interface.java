@@ -96,7 +96,7 @@ public class Interface extends Thread {
 
     }
 
-    private void send(String header, String sender, String receiver, String body, String footer, String realIpAddress, int realPort){
+    private synchronized void send(String header, String sender, String receiver, String body, String footer, String realIpAddress, int realPort){
         String message = header + ";" + sender + ";" + receiver + ";" + body + footer;
 
         try {
@@ -142,48 +142,37 @@ public class Interface extends Thread {
 
     public String assembleStringMessage(Message message) {
         String result = "";
+        String tempSender = "";
+        String tempReceiver = "";
         for(int i : message.getSenderIp()) {
-            String temp = String.valueOf(i);
-            if(temp.length() < 3) {
-                int zeroes = 3 - temp.length();
-                while(zeroes > 0) {
-                    temp = "0" + temp;
-                    zeroes--;
-                }
-            }
-            result += temp;
+            tempSender = String.valueOf(i) + ".";
 
         }
+        tempSender = tempSender.substring(0, tempSender.length() - 1);
+        result += this.countZeroesIp(tempSender);
 
         for(int i : message.getReceiverIp()) {
-            String temp = String.valueOf(i);
-            if(temp.length() < 3) {
-                int zeroes = 3 - temp.length();
-                while(zeroes > 0) {
-                    temp = "0" + temp;
-                    zeroes--;
-                }
-            }
-            result += temp;
+            tempReceiver = String.valueOf(i) + ".";
         }
+
+        tempReceiver = tempReceiver.substring(0, tempReceiver.length() - 1);
+        result += this.countZeroesIp(tempReceiver);
 
         result += String.valueOf(message.getAction());
 
+        String tempActionIp = "";
+
         if(message.getAction() <= 2 && message.getAction() >= 1) {
-            for(int i : message.getActionIp()) {
-                String temp = String.valueOf(i);
-                if(temp.length() < 3) {
-                    int zeroes = 3 - temp.length();
-                    while(zeroes > 0) {
-                        temp = "0" + temp;
-                        zeroes--;
-                    }
-                }
-                result += temp;
+            for (int i : message.getActionIp()) {
+                tempActionIp = String.valueOf(i) + ".";
+
             }
+
+            tempActionIp = tempActionIp.substring(0, tempActionIp.length() - 1);
 
         }
 
+        result += tempActionIp;
         result += message.getMessage();
         return result;
 
@@ -236,35 +225,12 @@ public class Interface extends Thread {
                 String[] inputContent = inputLine.split(";");
                 Envelope envelope;
                 if(inputContent[0].equals("share")) {
-                    String[] numbers = inputContent[1].split("\\.");
-                    String temp = "";
-                    for(String s: numbers) {
-                        if(s.length() < 3) {
-                            int zeroes = 3 - s.length() + 0;
-                            while(zeroes > 0) {
-                                s = "0" + s;
-                                zeroes--;
-                            }
-                        }
-                        temp += s;
-                    }
-
-                    numbers = inputContent[2].split("\\.");
-                    for(String s: numbers) {
-                        if(s.length() < 3) {
-                            int zeroes = 3 - s.length();
-                            while(zeroes > 0) {
-                                s = "0" + s;
-                                zeroes--;
-                            }
-                        }
-                        temp += s;
-                    }
+                    String temp = this.countZeroesIp(inputContent[1]);
+                    temp += this.countZeroesIp(inputContent[2]);
                     envelope = new ExternalEnvelope();
                     envelope.setSender(routerMacAddress);
                     envelope.setReceiver(macAddress);
                     String message = temp + "3" + inputContent[3];
-
                     envelope.setMessage(this.disassembleStringMessage(message));
 
                 } else {
@@ -287,5 +253,34 @@ public class Interface extends Thread {
         //conexion que espera que le llegue mensaje.
     }
 
+
+    private String countZeroesIp(String str) {
+        String result = "";
+        String[] numbers = str.split("\\.");
+        for(String s: numbers) {
+            if(s.length() < 3) {
+                int zeroes = 3 - s.length();
+                while(zeroes > 0) {
+                    s = "0" + s;
+                    zeroes--;
+                }
+            }
+            result += s;
+        }
+        return result;
+    }
+
+    public void sendMessage(String ipReceiver, int actionNumber, String ipAction, String messageBody){
+        String result = "";
+        result += this.countZeroesIp(this.ipVirtualAddress);
+        result += this.countZeroesIp(ipReceiver);
+        result += String.valueOf(actionNumber);
+        result += this.countZeroesIp(ipAction);
+        result += messageBody;
+
+        Message message = this.disassembleStringMessage(result);
+        this.processMessage(message);
+
+    }
 
 }
