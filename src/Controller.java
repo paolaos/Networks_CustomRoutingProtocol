@@ -7,28 +7,37 @@ import java.util.ArrayDeque;
 import java.util.Scanner;
 
 public class Controller {
-    private ArrayDeque<Envelope> inbox;
-    public void run() {
-        Node node;
-        inbox = new ArrayDeque<>();
+    public synchronized void run() {
+        ArrayDeque<Envelope> inbox = new ArrayDeque<>();
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Favor indicar el puerto utilizado para recibir mensajes.");
-        String localNetworkPort = scanner.next();
-        Thread thread;
+        Thread serverThread;
+        Thread ordinaryThread;
         System.out.println("Digite 0 si usted es un nodo de Interfaz, o 1 si es un nodo tipo Broadcast. ");
         int isInterface = scanner.nextInt();
+
         if(isInterface == 0) {
-            thread = new Interface(localNetworkPort, inbox);
-            thread.start();
+            serverThread = new Interface("serverActivation", inbox);
+            serverThread.start();
 
-            node = new Interface(inbox);
-            node.begin();
+
+            ordinaryThread = new Interface("ordinarySection", inbox);
+            try {
+                ordinaryThread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            ordinaryThread.start();
         } else {
-            thread = new Broadcaster(localNetworkPort, inbox);
-            thread.start();
+            serverThread = new Broadcaster("serverActivation", inbox);
+            serverThread.start();
 
-            node = new Broadcaster(inbox);
-            node.begin();
+            ordinaryThread = new Broadcaster("ordinarySection", inbox);
+            try {
+                ordinaryThread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            ordinaryThread.start();
         }
     }
 }

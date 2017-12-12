@@ -13,24 +13,13 @@ import java.util.TreeMap;
 
 public class Broadcaster extends Node {
 
-    public Broadcaster(ArrayDeque<Envelope> inbox) {
+    public Broadcaster(String threadName, ArrayDeque<Envelope> inbox) {
+        super(threadName, inbox);
         this.inbox = inbox;
         this.toolbox = new Toolbox();
         this.addressLocator = new TreeMap<>();
         this.ipTable = new TreeMap<>();
 
-    }
-
-    public Broadcaster(String localNetworkPort, ArrayDeque<Envelope> inbox) {
-        try {
-            this.inbox = inbox;
-            this.realReceivingPort = localNetworkPort;
-            serverSocket = new ServerSocket(Integer.parseInt(this.realReceivingPort));
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     protected void prepare(){

@@ -9,27 +9,13 @@ import java.net.ServerSocket;
 import java.util.*;
 
 public class Interface extends Node {
-
-    public Interface(ArrayDeque<Envelope> inbox) {
+    public Interface(String threadName, ArrayDeque<Envelope> inbox){
+        super(threadName, inbox);
         this.inbox = inbox;
         this.toolbox = new Toolbox();
         this.addressLocator = new TreeMap<>();
         this.ipTable = new TreeMap<>();
 
-
-
-    }
-
-    public Interface(String localNetworkPort, ArrayDeque<Envelope> inbox) {
-        try {
-            this.inbox = inbox;
-            this.realReceivingPort = localNetworkPort;
-            serverSocket = new ServerSocket(Integer.parseInt(this.realReceivingPort));
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     protected void prepare() {
@@ -42,6 +28,8 @@ public class Interface extends Node {
         this.macAddress = scanner.next();
         System.out.println("Cuál es su puerto para mandar mensajes?");
         this.realSendingPort = scanner.next();
+        System.out.println("Cuál es su puerto para recibir mensajes?");
+        this.realReceivingPort = scanner.next();
 
 
         System.out.println("Cuál es la dirección virtual de su dispatcher?");

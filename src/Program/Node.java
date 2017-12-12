@@ -11,8 +11,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 
 public abstract class Node extends Thread {
     String virtualIpAddress;
@@ -26,27 +25,45 @@ public abstract class Node extends Thread {
     Queue<Envelope> inbox;
     Map<String, String> ipTable;
 
+    public Node (String threadName, ArrayDeque<Envelope> inbox){
+        super(threadName);
+        this.inbox = inbox;
+        this.toolbox = new Toolbox();
+        this.addressLocator = new TreeMap<>();
+        this.ipTable = new TreeMap<>();
+    }
 
     public void run(){
-        try {
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                System.out.println("Ya me conecté. ");
-                DataInputStream dataIn = new DataInputStream(clientSocket.getInputStream());
-                String inputLine = dataIn.readUTF();
-                System.out.println("Me llegó esto: " + inputLine);
-                String[] inputContent = inputLine.split(";");
-                Envelope envelope;
-                envelope = new InternalEnvelope();
-                envelope.setSender(inputContent[1]);
-                envelope.setReceiver(inputContent[2]);
-                envelope.setMessage(toolbox.convertStringToMessage(inputContent[3]));
-                this.inbox.add(envelope);
-                clientSocket.close();
+        if(getName().equals("serverActivation")) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Favor indicar el puerto utilizado para recibir mensajes.");
+            this.realReceivingPort = scanner.next();
+            try {
+                serverSocket = new ServerSocket(Integer.parseInt(this.realReceivingPort));
+                while (true) {
+                    Socket clientSocket = serverSocket.accept();
+                    System.out.println("Ya me conecté. ");
+                    DataInputStream dataIn = new DataInputStream(clientSocket.getInputStream());
+                    String inputLine = dataIn.readUTF();
+                    System.out.println("Me llegó esto: " + inputLine);
+                    String[] inputContent = inputLine.split(";");
+                    Envelope envelope;
+                    envelope = new InternalEnvelope();
+                    envelope.setSender(inputContent[1]);
+                    envelope.setReceiver(inputContent[2]);
+                    envelope.setMessage(toolbox.convertStringToMessage(inputContent[3]));
+                    this.inbox.add(envelope);
+                    clientSocket.close();
 
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        }catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            if(getName().equals("ordinarySection")) {
+                this.prepare();
+                this.wakeUp();
+            }
         }
     }
 
@@ -61,11 +78,6 @@ public abstract class Node extends Thread {
     protected abstract void processMessage(Message message);
 
     protected abstract void prepare();
-
-    public void begin() {
-        this.prepare();
-        this.wakeUp();
-    }
 
     private void wakeUp(){
         System.out.println("Waking up...");
