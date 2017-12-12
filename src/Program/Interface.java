@@ -13,14 +13,18 @@ public class Interface extends Node {
     public Interface(ArrayDeque<Envelope> inbox) {
         this.inbox = inbox;
         this.toolbox = new Toolbox();
-        addressLocator = new TreeMap<>();
+        this.addressLocator = new TreeMap<>();
+        this.ipTable = new TreeMap<>();
+
+
 
     }
 
-    public Interface(int localNetworkPort, ArrayDeque<Envelope> inbox) {
+    public Interface(String localNetworkPort, ArrayDeque<Envelope> inbox) {
         try {
             this.inbox = inbox;
-            serverSocket = new ServerSocket(localNetworkPort);
+            this.realReceivingPort = localNetworkPort;
+            serverSocket = new ServerSocket(Integer.parseInt(this.realReceivingPort));
 
 
         } catch (IOException e) {
@@ -37,7 +41,7 @@ public class Interface extends Node {
         System.out.println("Cuál es su MAC address virtual?");
         this.macAddress = scanner.next();
         System.out.println("Cuál es su puerto para mandar mensajes?");
-        this.realPort = scanner.next();
+        this.realSendingPort = scanner.next();
 
 
         System.out.println("Cuál es la dirección virtual de su dispatcher?");
@@ -48,7 +52,7 @@ public class Interface extends Node {
         String dispatcherPort = scanner.next();
         this.ipTable.put(virtualDispatcherIpAddress, "dispatcher");
         this.addressLocator.put(virtualDispatcherIpAddress, realDispatcherIpAddress + ";" + dispatcherPort);
-        String stringMessage = this.createMessage(this.virtualIpAddress, 0, "", this.macAddress + " " + this.realIpAddress + ";" + this.realPort);
+        String stringMessage = this.createMessage(virtualDispatcherIpAddress, 0, "", this.macAddress + " " + this.realIpAddress + ";" + this.realReceivingPort);
         Message message = this.toolbox.convertStringToMessage(stringMessage);
         this.processMessage(message);
 
@@ -109,7 +113,7 @@ public class Interface extends Node {
         switch(message.getAction()) {
             case 0: //ninguna acción solicitada
                 if(messageReceiverIp.equals(this.virtualIpAddress))
-                    System.out.println("Program.Message from " + messageSenderIp + ": " + message.getMessage());
+                    System.out.println("Message from " + messageSenderIp + ": " + message.getMessage());
 
                 else {
                     if(this.ipTable.get(messageReceiverIp) == (null)) { //revisar
@@ -141,16 +145,16 @@ public class Interface extends Node {
 
                 break;
 
-            case 1: //conoce esta dirección IP? BODY(del que pregunta): macAddress realIpAddress;realPort
+            case 1: //conoce esta dirección IP? BODY(del que pregunta): macAddress realIpAddress;realSendingPort
                 String ipAddress = toolbox.convertIpToString(message.getActionIp());
                 int actionNumber = -1;
                 String body = "";
                 if(ipAddress.equals(this.virtualIpAddress)) {
                     actionNumber = 2;
-                    body = this.macAddress + " " + this.realIpAddress + ";" + this.realPort;
+                    body = this.macAddress + " " + this.realIpAddress + ";" + this.realSendingPort;
                 } else {
                     if(this.ipTable.containsKey(ipAddress)) {
-                        body = toolbox.convertIpToString(message.getActionIp()) + " " + this.macAddress + " " + this.realIpAddress + ";" + this.realPort;
+                        body = toolbox.convertIpToString(message.getActionIp()) + " " + this.macAddress + " " + this.realIpAddress + ";" + this.realSendingPort;
                         actionNumber = 3;
                     }
                 }
@@ -163,13 +167,13 @@ public class Interface extends Node {
 
                 break;
 
-            case 2: //yep, soy yo. BODY: macAddress realIpAddress;realPort
+            case 2: //yep, soy yo. BODY: macAddress realIpAddress;realSendingPort
                 String[] splitString = message.getMessage().split(" ");
                 this.ipTable.put(messageSenderIp, splitString[0]);
                 this.addressLocator.put(splitString[0], splitString[1]);
                 break;
 
-            case 3: //yep, yo conozco esa dirección IP, es através mío. BODY: ipVirtualAddressSolicitado macAddress realIpAddress;realPort
+            case 3: //yep, yo conozco esa dirección IP, es através mío. BODY: ipVirtualAddressSolicitado macAddress realIpAddress;realSendingPort
                 splitString = message.getMessage().split(" ");
                 this.ipTable.put(splitString[0], splitString[1]);
                 this.addressLocator.put(splitString[1], splitString[2]);

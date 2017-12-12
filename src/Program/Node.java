@@ -17,7 +17,8 @@ import java.util.Queue;
 public abstract class Node extends Thread {
     String virtualIpAddress;
     String realIpAddress;
-    String realPort;
+    String realSendingPort;
+    String realReceivingPort;
     String macAddress;
     Map<String, String> addressLocator;
     ServerSocket serverSocket;

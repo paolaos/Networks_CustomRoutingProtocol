@@ -16,14 +16,16 @@ public class Broadcaster extends Node {
     public Broadcaster(ArrayDeque<Envelope> inbox) {
         this.inbox = inbox;
         this.toolbox = new Toolbox();
-        addressLocator = new TreeMap<>();
+        this.addressLocator = new TreeMap<>();
+        this.ipTable = new TreeMap<>();
 
     }
 
-    public Broadcaster(int localNetworkPort, ArrayDeque<Envelope> inbox) {
+    public Broadcaster(String localNetworkPort, ArrayDeque<Envelope> inbox) {
         try {
             this.inbox = inbox;
-            serverSocket = new ServerSocket(localNetworkPort);
+            this.realReceivingPort = localNetworkPort;
+            serverSocket = new ServerSocket(Integer.parseInt(this.realReceivingPort));
 
 
         } catch (IOException e) {
@@ -37,16 +39,15 @@ public class Broadcaster extends Node {
         this.virtualIpAddress = scanner.next();
         System.out.println("Cuál es su dirección IP (real)?");
         this.realIpAddress = scanner.next();
-        System.out.println("Cuál es su MAC address virtual?");
-        this.macAddress = scanner.next();
-        System.out.println("Cuál es su puerto?");
-        this.realPort = scanner.next();
+        this.macAddress = "dispatcher";
+        System.out.println("Cuál es su puerto para mandar mensajes?");
+        this.realSendingPort = scanner.next();
 
     }
 
     protected void processMessage(Message message){
         switch (message.getAction()) {
-            case 0: //entra macAddress realIpAddress;realPort
+            case 0: //entra macAddress realIpAddress;realSendingPort
                 String[] splitString = message.getMessage().split(" ");
                 this.addressLocator.put(splitString[0], splitString[1]);
                 System.out.println("Entró: " + splitString[0] + ", " + splitString[1]);

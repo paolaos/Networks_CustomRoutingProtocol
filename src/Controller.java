@@ -13,11 +13,11 @@ public class Controller {
         inbox = new ArrayDeque<>();
         Scanner scanner = new Scanner(System.in);
         System.out.println("Favor indicar el puerto utilizado para recibir mensajes.");
-        int localNetworkPort = scanner.nextInt();
+        String localNetworkPort = scanner.next();
         Thread thread;
         System.out.println("Digite 0 si usted es un nodo de Interfaz, o 1 si es un nodo tipo Broadcast. ");
-        boolean isInterface = scanner.nextBoolean();
-        if(isInterface) {
+        int isInterface = scanner.nextInt();
+        if(isInterface == 0) {
             thread = new Interface(localNetworkPort, inbox);
             thread.start();
 
