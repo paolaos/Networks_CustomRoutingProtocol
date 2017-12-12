@@ -1,18 +1,13 @@
-public abstract class Envelope {
-    protected String sender;
-    protected String receiver;
-    protected Message message;
+package Program.Envelope;
+import Program.Message.Message;
 
-    public String getSender() {
-        return sender;
-    }
+public abstract class Envelope {
+    String sender;
+    String receiver;
+    Message message;
 
     public void setSender(String sender) {
         this.sender = sender;
-    }
-
-    public String getReceiver() {
-        return receiver;
     }
 
     public void setReceiver(String receiver) {

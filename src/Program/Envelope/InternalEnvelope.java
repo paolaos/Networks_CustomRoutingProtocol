@@ -1,3 +1,7 @@
+package Program.Envelope;
+
+import Program.Message.Message;
+
 public class InternalEnvelope extends Envelope {
 
     public InternalEnvelope(){

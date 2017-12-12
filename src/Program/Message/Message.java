@@ -1,3 +1,5 @@
+package Program.Message;
+
 public class Message {
     private int[] senderIp;
     private int[] receiverIp;
