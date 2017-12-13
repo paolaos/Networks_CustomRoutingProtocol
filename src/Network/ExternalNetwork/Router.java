@@ -12,31 +12,70 @@ import java.net.Socket;
 import java.util.*;
 
 public class Router extends Interface {
+    private class BufferNode {
+        //algoritmo, clock
+        private Envelope envelope;
+        private BufferNodeState state;
+        private Date timestamp;
+        private int id;
+
+
+        void setId(int id) {
+            this.id = id;
+        }
+
+        void setState(BufferNodeState state) {
+            this.state = state;
+        }
+
+        void setEnvelope(Envelope envelope) {
+            this.envelope = envelope;
+        }
+
+        void setTimestamp(Date timestamp) {
+            this.timestamp = timestamp;
+        }
+
+        Envelope getEnvelope() {
+            return envelope;
+        }
+
+        BufferNodeState getState() {
+            return state;
+        }
+
+        Date getTimestamp() {
+            return timestamp;
+        }
+
+        int getId() {
+            return id;
+        }
+    }
     private int waitingTime;
     private List<BufferNode> buffer;
-    private NavigableMap<Date, Integer> bufferCurrentStatus;
+    private NavigableMap<Date, Integer> currentBufferLog;
 
-    public Router(String threadName, NavigableMap<Date, Integer> bufferCurrentStatus) {
+    public Router(String threadName, NavigableMap<Date, Integer> currentBufferLog) {
         super(threadName);
         this.toolbox = new Toolbox();
         this.addressLocator = new TreeMap<>();
         this.ipTable = new TreeMap<>();
         buffer = new LinkedList<>();
-        this.bufferCurrentStatus = bufferCurrentStatus;
+        this.currentBufferLog = currentBufferLog;
         for(int i = 0; i < 10; i++) {
             BufferNode temp = new BufferNode();
             temp.setId(i);
             temp.setState(BufferNodeState.VACANT);
             temp.setTimestamp(new Date());
             buffer.add(temp);
-            bufferCurrentStatus.put(temp.getTimestamp(), temp.getId());
+            currentBufferLog.put(temp.getTimestamp(), temp.getId());
 
         }
 
 
     }
 
-    @Override
     public void run() {
         if(getName().equals("serverActivation")) {
             this.prepare();
@@ -62,8 +101,8 @@ public class Router extends Interface {
                     this.buffer.get(position).setEnvelope(envelope);
                     Date now = new Date();
                     this.buffer.get(position).setTimestamp(now);
-                    synchronized (this.bufferCurrentStatus) {
-                        this.bufferCurrentStatus.put(now, position);
+                    synchronized (this) {
+                        this.currentBufferLog.put(now, position);
                     }
                 }
 
@@ -72,25 +111,23 @@ public class Router extends Interface {
             }
         } else {
             if(getName().equals("logActivation")) try {
-                this.sleep(20000);
+                sleep(20000);
                 while (true) {
                     System.out.println(this.printLog());
-                    this.sleep(5000);
+                    sleep(5000);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } else {
                 if(getName().equals("messageProcessing")) {
                     while(true) {
-                        if(!this.bufferCurrentStatus.isEmpty()) {
+                        if(!this.currentBufferLog.isEmpty()) {
                             Map.Entry<Date, Integer> lastEntry;
-                            synchronized (this.bufferCurrentStatus) {
-                                lastEntry = this.bufferCurrentStatus.lastEntry();
-                            }
-                            int result = lastEntry.getValue();
-                            this.processMessage(this.buffer.get(result).getEnvelope().getMessage());
-                            synchronized (this.bufferCurrentStatus) {
-                                this.bufferCurrentStatus.remove(lastEntry.getKey());
+                            synchronized (this) {
+                                lastEntry = this.currentBufferLog.lastEntry();
+                                int result = lastEntry.getValue();
+                                this.processMessage(this.buffer.get(result).getEnvelope().getMessage());
+                                this.currentBufferLog.remove(lastEntry.getKey());
                             }
                         }
                     }
@@ -99,7 +136,6 @@ public class Router extends Interface {
         }
     }
 
-    @Override
     protected void prepare() {
         Scanner scanner = new Scanner(System.in);
         System.out.printf("Indique cuál es su dirección IP (virtual)");
@@ -117,7 +153,6 @@ public class Router extends Interface {
 
     }
 
-    @Override
     protected void processMessage(Message message) {
         switch (message.getAction()) {
             case 1: //entra networkAddress macAddress realIpAddress,realSendingPort
@@ -125,9 +160,19 @@ public class Router extends Interface {
                 this.addressLocator.put(splitString[0], splitString[1]);
                 this.ipTable.put(splitString[1], splitString[2]);
                 break;
-            case 0: //FORWARD
+            case 0: //FORWARD message
                 try {
-                    this.sleep(waitingTime);
+                    sleep(waitingTime);
+                    int[] requestedIp = message.getReceiverIp();
+                    String requestedNetwork = String.valueOf(requestedIp[0]) + "." + String.valueOf(requestedIp[1]) + ".0.0";
+                    if(this.addressLocator.containsKey(requestedNetwork)) {
+                        String macAddress = this.addressLocator.get(requestedNetwork);
+                        String[] realAddressAndPort = this.ipTable.get(macAddress).split(",");
+                        this.send(macAddress, message.getMessage(), realAddressAndPort[0], Integer.parseInt(realAddressAndPort[1]));
+
+                    } else {
+                        System.err.println("Couldn't find address " + requestedNetwork);
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -150,16 +195,16 @@ public class Router extends Interface {
     }
 
     private int forceASpot(){
-        int result = this.bufferCurrentStatus.get(this.bufferCurrentStatus.firstKey());
-        synchronized (this.bufferCurrentStatus) {
-            this.bufferCurrentStatus.remove(this.bufferCurrentStatus.firstKey());
+        int result = this.currentBufferLog.get(this.currentBufferLog.firstKey());
+        synchronized (this) {
+            this.currentBufferLog.remove(this.currentBufferLog.firstKey());
         }
 
         return result;
     }
 
-    public String printLog(){
-        return this.bufferCurrentStatus.toString();
+    private String printLog(){
+        return this.currentBufferLog.toString();
     }
 
 
