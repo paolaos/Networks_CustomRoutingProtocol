@@ -1,9 +1,9 @@
-package Program;
+package InternalNetwork;
 
-import Program.Envelope.Envelope;
-import Program.Envelope.InternalEnvelope;
-import Program.Message.Message;
-import Program.Toolbox.Toolbox;
+import InternalNetwork.Envelope.Envelope;
+import InternalNetwork.Envelope.InternalEnvelope;
+import InternalNetwork.Message.Message;
+import InternalNetwork.Toolbox.Toolbox;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -49,9 +49,9 @@ public abstract class Node extends Thread {
                     String[] inputContent = inputLine.split(";");
                     Envelope envelope;
                     envelope = new InternalEnvelope();
-                    envelope.setSender(inputContent[1]);
-                    envelope.setReceiver(inputContent[2]);
-                    envelope.setMessage(toolbox.convertStringToMessage(inputContent[3]));
+                    envelope.setSender(inputContent[0]);
+                    envelope.setReceiver(inputContent[1]);
+                    envelope.setMessage(toolbox.convertStringToMessage(inputContent[2]));
                     this.inbox.add(envelope);
                     clientSocket.close();
 

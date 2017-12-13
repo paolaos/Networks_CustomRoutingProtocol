@@ -1,6 +1,6 @@
-package Program.Envelope;
+package InternalNetwork.Envelope;
 
-import Program.Message.Message;
+import InternalNetwork.Message.Message;
 
 public class InternalEnvelope extends Envelope {
 

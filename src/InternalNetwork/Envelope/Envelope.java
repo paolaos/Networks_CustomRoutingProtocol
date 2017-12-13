@@ -1,5 +1,5 @@
-package Program.Envelope;
-import Program.Message.Message;
+package InternalNetwork.Envelope;
+import InternalNetwork.Message.Message;
 
 public abstract class Envelope {
     String sender;

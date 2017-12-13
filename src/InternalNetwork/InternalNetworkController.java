@@ -1,12 +1,13 @@
-import Program.Envelope.Envelope;
-import Program.Interface;
-import Program.Broadcaster;
-import Program.Node;
+package InternalNetwork;
+
+import InternalNetwork.Envelope.Envelope;
+import InternalNetwork.Interface;
+import InternalNetwork.Broadcaster;
 
 import java.util.ArrayDeque;
 import java.util.Scanner;
 
-public class Controller {
+public class InternalNetworkController {
     public synchronized void run() {
         ArrayDeque<Envelope> inbox = new ArrayDeque<>();
         Scanner scanner = new Scanner(System.in);

@@ -1,11 +1,9 @@
-package Program;
+package InternalNetwork;
 
-import Program.Envelope.Envelope;
-import Program.Message.Message;
-import Program.Toolbox.Toolbox;
+import InternalNetwork.Envelope.Envelope;
+import InternalNetwork.Message.Message;
+import InternalNetwork.Toolbox.Toolbox;
 
-import java.io.IOException;
-import java.net.ServerSocket;
 import java.util.ArrayDeque;
 import java.util.Map;
 import java.util.Scanner;

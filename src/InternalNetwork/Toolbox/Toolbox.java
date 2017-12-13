@@ -1,6 +1,6 @@
-package Program.Toolbox;
+package InternalNetwork.Toolbox;
 
-import Program.Message.Message;
+import InternalNetwork.Message.Message;
 
 
 //todo modificaciones de StringBuilder, hacer pruebas!

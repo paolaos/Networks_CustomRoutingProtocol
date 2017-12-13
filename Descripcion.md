@@ -4,7 +4,7 @@
 
 La implementación de este proyecto fue hecha en Java 9, utilizando el IDE IntelliJIdea 2017.2.5. Sin embargo, este programa se puede correr en cualquier máquina que contenga un JVM. Dado a que existieron conflictos de grupo, el programa fue diseñado lo más modular posible de tal forma que no tuviera que modificarse el código puro para ser utilizado en otros ámbitos, como una posible réplica de interfaces bajo el mismo código. 
 
-1. *Inicialización de interfaz:* El actor principal del sistema es la clase Program.Program. En su constructor, se settean las variables necesarias para el funcionamiento del sistema y se inicializa un hilo encargado de levantar un servidor encargado de recibir mensajes dentro de la red local y almacenarlos en la cola. Un Usuario instancia directamente una clase interfaz, pasándole por parámetro:
+1. *Inicialización de interfaz:* El actor principal del sistema es la clase InternalNetwork.InternalNetwork. En su constructor, se settean las variables necesarias para el funcionamiento del sistema y se inicializa un hilo encargado de levantar un servidor encargado de recibir mensajes dentro de la red local y almacenarlos en la cola. Un Usuario instancia directamente una clase interfaz, pasándole por parámetro:
  * Dirección IP virtual de la interfaz
  * Dirección MAC de la interfaz
  * Dirección IP real y puerto del nodo que contiene al shared memory

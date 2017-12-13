@@ -1,11 +1,9 @@
-package Program;
+package InternalNetwork;
 
-import Program.Envelope.*;
-import Program.Message.*;
-import Program.Toolbox.*;
+import InternalNetwork.Envelope.*;
+import InternalNetwork.Message.*;
+import InternalNetwork.Toolbox.*;
 
-import java.io.*;
-import java.net.ServerSocket;
 import java.util.*;
 
 public class Interface extends Node {
