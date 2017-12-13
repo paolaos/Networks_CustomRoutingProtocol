@@ -1,8 +1,8 @@
-package InternalNetwork;
+package Network.InternalNetwork;
 
-import InternalNetwork.Envelope.Envelope;
-import InternalNetwork.Message.Message;
-import InternalNetwork.Toolbox.Toolbox;
+import Network.Envelope.Envelope;
+import Network.Message.Message;
+import Network.Toolbox.Toolbox;
 
 import java.util.ArrayDeque;
 import java.util.Map;
@@ -26,7 +26,7 @@ public class Broadcaster extends Node {
         this.virtualIpAddress = scanner.next();
         System.out.println("Cuál es su dirección IP (real)?");
         this.realIpAddress = scanner.next();
-        this.macAddress = "dispatcher";
+        this.macAddress = "broadcaster";
         System.out.println("Cuál es su puerto para mandar mensajes?");
         this.realSendingPort = scanner.next();
 

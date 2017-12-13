@@ -1,5 +1,5 @@
-package InternalNetwork.Envelope;
-import InternalNetwork.Message.Message;
+package Network.Envelope;
+import Network.Message.Message;
 //lo que se utiliza en Bolinchas
 public class ExternalEnvelope extends Envelope {
     public ExternalEnvelope(){

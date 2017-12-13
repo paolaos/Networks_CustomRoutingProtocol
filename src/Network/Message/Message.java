@@ -1,4 +1,4 @@
-package InternalNetwork.Message;
+package Network.Message;
 
 public class Message {
     private int[] senderIp;

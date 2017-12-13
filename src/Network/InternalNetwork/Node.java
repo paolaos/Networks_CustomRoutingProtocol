@@ -1,9 +1,10 @@
-package InternalNetwork;
+package Network.InternalNetwork;
 
-import InternalNetwork.Envelope.Envelope;
-import InternalNetwork.Envelope.InternalEnvelope;
-import InternalNetwork.Message.Message;
-import InternalNetwork.Toolbox.Toolbox;
+import Network.Envelope.Envelope;
+import Network.Envelope.InternalEnvelope;
+import Network.Interface;
+import Network.Message.Message;
+import Network.Toolbox.Toolbox;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -13,17 +14,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
-public abstract class Node extends Thread {
-    String virtualIpAddress;
-    String realIpAddress;
-    String realSendingPort;
-    String realReceivingPort;
-    String macAddress;
-    Map<String, String> addressLocator;
-    ServerSocket serverSocket;
-    Toolbox toolbox;
+public abstract class Node extends Interface {
     Queue<Envelope> inbox;
-    Map<String, String> ipTable;
 
     public Node (String threadName, ArrayDeque<Envelope> inbox){
         super(threadName);
@@ -67,7 +59,7 @@ public abstract class Node extends Thread {
         }
     }
 
-    private synchronized void checkMessages(){
+    synchronized void checkMessages(){
         if(!inbox.isEmpty()) {
             this.processMessage(inbox.poll().getMessage());
 
@@ -75,35 +67,17 @@ public abstract class Node extends Thread {
 
     }
 
-    protected abstract void processMessage(Message message);
-
-    protected abstract void prepare();
-
-    private void wakeUp(){
+    void wakeUp(){
         System.out.println("Waking up...");
         while(true)
             this.checkMessages();
 
     }
 
-    synchronized void send(String receiver, String body, String realIpAddress, int realPort) {
-        String message = this.macAddress + ";" + receiver + ";" + body + ";";
-
-        try {
-            Socket socket = new Socket(realIpAddress, realPort);
-            System.out.println("Conectada a servidor.");
-            OutputStream os = socket.getOutputStream();
-            DataOutputStream out = new DataOutputStream(os);
-            out.writeUTF(message);
-            socket.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
     synchronized void addToInbox(Envelope envelope) {
         inbox.add(envelope);
     }
+
+
+
 }

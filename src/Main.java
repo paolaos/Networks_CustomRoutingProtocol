@@ -1,4 +1,4 @@
-import InternalNetwork.InternalNetworkController;
+import Network.InternalNetwork.InternalNetworkController;
 
 public class Main {
     public static void main(String[] args) {

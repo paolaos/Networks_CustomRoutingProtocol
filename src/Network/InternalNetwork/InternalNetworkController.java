@@ -1,8 +1,6 @@
-package InternalNetwork;
+package Network.InternalNetwork;
 
-import InternalNetwork.Envelope.Envelope;
-import InternalNetwork.Interface;
-import InternalNetwork.Broadcaster;
+import Network.Envelope.Envelope;
 
 import java.util.ArrayDeque;
 import java.util.Scanner;
@@ -17,11 +15,11 @@ public class InternalNetworkController {
         int isInterface = scanner.nextInt();
 
         if(isInterface == 0) {
-            serverThread = new Interface("serverActivation", inbox);
+            serverThread = new Messenger("serverActivation", inbox);
             serverThread.start();
 
 
-            ordinaryThread = new Interface("ordinarySection", inbox);
+            ordinaryThread = new Messenger("ordinarySection", inbox);
             try {
                 ordinaryThread.sleep(10000);
             } catch (InterruptedException e) {

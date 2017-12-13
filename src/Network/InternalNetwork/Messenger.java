@@ -1,13 +1,13 @@
-package InternalNetwork;
+package Network.InternalNetwork;
 
-import InternalNetwork.Envelope.*;
-import InternalNetwork.Message.*;
-import InternalNetwork.Toolbox.*;
+import Network.Envelope.*;
+import Network.Message.*;
+import Network.Toolbox.*;
 
 import java.util.*;
 
-public class Interface extends Node {
-    public Interface(String threadName, ArrayDeque<Envelope> inbox){
+public class Messenger extends Node {
+    public Messenger(String threadName, ArrayDeque<Envelope> inbox){
         super(threadName, inbox);
         this.inbox = inbox;
         this.toolbox = new Toolbox();
@@ -30,64 +30,89 @@ public class Interface extends Node {
         this.realReceivingPort = scanner.next();
 
 
-        System.out.println("Cuál es la dirección virtual de su dispatcher?");
+        System.out.println("Cuál es la dirección virtual de su broadcaster?");
         String virtualDispatcherIpAddress = scanner.next();
-        System.out.println("Cuál es la dirección IP de su dispatcher?");
+        System.out.println("Cuál es la dirección IP de su broadcaster?");
         String realDispatcherIpAddress = scanner.next();
-        System.out.println("Cuál es el puerto de su dispatcher?");
-        String dispatcherPort = scanner.next();
-        this.ipTable.put(virtualDispatcherIpAddress, "dispatcher");
-        this.addressLocator.put("dispatcher", realDispatcherIpAddress + ";" + dispatcherPort);
+        System.out.println("Cuál es el puerto de su broadcaster?");
+        String broadcasterPort = scanner.next();
+        this.ipTable.put(virtualDispatcherIpAddress, "broadcaster");
+        this.addressLocator.put("broadcaster", realDispatcherIpAddress + "," + broadcasterPort);
         String stringMessage = this.createMessage(virtualDispatcherIpAddress, 0, "", this.macAddress + " " + this.realIpAddress + "," + this.realReceivingPort);
-        this.send("dispatcher", stringMessage, realDispatcherIpAddress, Integer.parseInt(dispatcherPort));
+        this.send("broadcaster", stringMessage, realDispatcherIpAddress, Integer.parseInt(broadcasterPort));
 
-
-        System.out.println("Digite 0 si usted es un nodo router, o 1 si usted es un nodo terminal.");
+        System.out.println("Ahora hay que agregar a sus vecinos router o interfaces router. Presione 1 para agregar, o 0 para omitir.");
         int result = scanner.nextInt();
-        if(result == 0) {
-            System.out.println("Ahora hay que agregar a sus vecinos router. Presione 1 para agregar, o 0 para omitir.");
-            result = scanner.nextInt();
 
-            if(result == 1) {
-                while (result == 1) {
-                    System.out.println("Digite la dirección IP virtual de su compañero de router");
-                    String address = scanner.next();
-                    System.out.println("Digite el nombre por el cual usted conoce al router");
-                    ipTable.put(address, scanner.next());
-                    System.out.println("Digite 1 para agregar a otro router, o bien 0 para terminar de agregar mas vecinos router");
-                    result = scanner.nextInt();
+        if(result == 1) {
+            while (result == 1) {
+                System.out.println("Presione 0 si es un vecino router, o 1 si es una interfaz router");
+                result = scanner.nextInt();
+
+                System.out.println("Digite la dirección IP virtual de su compañero de router");
+                String routerVirtualIpAddress = scanner.next();
+                System.out.println("Digite el nombre por el cual usted conoce al router");
+                String routerMacAddress = scanner.next();
+                this.ipTable.put(routerVirtualIpAddress, routerMacAddress);
+                System.out.println("Digite la dirección IP real de su compañero de router");
+                String routerRealIpAddress = scanner.next();
+                System.out.println("También digite su número de puerto");
+                String routerPort = scanner.next();
+                this.addressLocator.put(routerMacAddress, routerRealIpAddress + "," + routerPort);
+                if(result == 1) {
+                    stringMessage = this.createMessage(routerVirtualIpAddress, 1, "", this.macAddress + " " + this.realIpAddress + "," + this.realReceivingPort);
+                    this.send(routerMacAddress, stringMessage, routerRealIpAddress, Integer.parseInt(routerPort));
 
                 }
+
+                System.out.println("Digite 1 para agregar a otro router, o bien 0 para terminar de agregar mas vecinos router");
+                result = scanner.nextInt();
 
             }
 
-        } else {
-            System.out.println("Presione 1 para mandar un mensajes, o bien presione 0 para omitir");
-            int response = scanner.nextInt();
-            if(response == 1) {
-                while(response == 1) {
-                    System.out.println("Escriba la dirección IP virtual de la persona a la que le quiere mandar un mensaje");
-                    String ipReceiver = scanner.next();
-                    System.out.println("Diga el número de acción de su mensaje ");
-                    response = scanner.nextInt();
-                    String actionIp = "";
-                    if (response == 1 || response == 2) {
-                        System.out.println("Escriba la dirección IP virtual de la acción de mensaje");
-                        actionIp = scanner.next();
+        }
 
-                    }
+        System.out.println("Ahora tiene que agregar a las redes inalcanzables por esta red cuyo camino para " +
+                "llegar a ellas lo incluye a uno de sus compañeros de router. Presione 1 para agregar, o 0 para omitir.");
+        result = scanner.nextInt();
 
-                    System.out.println("Finalmente, escriba el cuerpo del mensaje, alfanumérico y sin sobrepasarse de los 1200 caracteres");
-                    String body = scanner.next();
-                    this.createMessage(ipReceiver, response, actionIp, body);
-                    System.out.println("Escriba 1 para mandar otro mensaje, o 0 para terminar de mandar mensajes");
-                    response = scanner.nextInt();
+        if(result == 1) {
+            while (result == 1) {
+                System.out.println("Digite la dirección IP virtual de donde se querría ir. ");
+                String address = scanner.next();
+                System.out.println("Digite a través de cuál router (nombre) se tendría que ir. ");
+                String router = scanner.next();
+                this.ipTable.put(address, router);
+                System.out.println("Digite 1 para agregar a otra dirección, o bien 0 para terminar de agregar mas vecinos router");
+                result = scanner.nextInt();
 
-                }
             }
         }
 
-        System.out.println("Listo!");
+
+        System.out.println("Presione 1 para mandar un mensajes, o bien presione 0 para omitir");
+        int response = scanner.nextInt();
+        if(response == 1) {
+            while(response == 1) {
+                System.out.println("Escriba la dirección IP virtual de la persona a la que le quiere mandar un mensaje");
+                String ipReceiver = scanner.next();
+                System.out.println("Diga el número de acción de su mensaje ");
+                response = scanner.nextInt();
+                String actionIp = "";
+                if (response == 1) {
+                    System.out.println("Escriba la dirección IP virtual de la acción de mensaje");
+                    actionIp = scanner.next();
+
+                }
+
+                System.out.println("Finalmente, escriba el cuerpo del mensaje, alfanumérico y sin sobrepasarse de los 1200 caracteres");
+                String body = scanner.next();
+                this.createMessage(ipReceiver, response, actionIp, body);
+                System.out.println("Escriba 1 para mandar otro mensaje, o 0 para terminar de mandar mensajes");
+                response = scanner.nextInt();
+
+            }
+        }
 
     }
 
@@ -106,7 +131,7 @@ public class Interface extends Node {
                         this.addToInbox(new InternalEnvelope(macAddress, macAddress, message));
 
                         String bodyMessage = this.createMessage(this.virtualIpAddress, 1, messageReceiverIp, "");
-                        String[] realInformation = this.addressLocator.get("dispatcher").split(";");
+                        String[] realInformation = this.addressLocator.get("dispatcher").split(",");
                         this.send("dispatcher", bodyMessage, realInformation[0], Integer.parseInt(realInformation[1]));
 
                     } else {
@@ -120,7 +145,7 @@ public class Interface extends Node {
                                 System.err.println("Error: no hay dirección IP real de una dirección MAC ya registrada");
 
                             else {
-                                String[] receiverRealInformation = realInformation.split(";");
+                                String[] receiverRealInformation = realInformation.split(",");
                                 this.send(closestMacAddress, toolbox.convertMessageToString(message), receiverRealInformation[0], Integer.parseInt(receiverRealInformation[1]));
 
                             }
@@ -136,16 +161,16 @@ public class Interface extends Node {
                 String body = "";
                 if(ipAddress.equals(this.virtualIpAddress)) {
                     actionNumber = 2;
-                    body = this.macAddress + " " + this.realIpAddress + ";" + this.realSendingPort;
+                    body = this.macAddress + " " + this.realIpAddress + "," + this.realSendingPort;
                 } else {
                     if(this.ipTable.containsKey(ipAddress)) {
-                        body = toolbox.convertIpToString(message.getActionIp()) + " " + this.macAddress + " " + this.realIpAddress + ";" + this.realSendingPort;
+                        body = toolbox.convertIpToString(message.getActionIp()) + " " + this.macAddress + " " + this.realIpAddress + "," + this.realSendingPort;
                         actionNumber = 3;
                     }
                 }
                 if(actionNumber > -1) {
                     String[] senderInformation = message.getMessage().split(" ");
-                    String[] realInformation = senderInformation[1].split(";");
+                    String[] realInformation = senderInformation[1].split(",");
                     String bodyMessage = this.createMessage(messageSenderIp, actionNumber, "", body);
                     this.send(senderInformation[0], bodyMessage, realInformation[0], Integer.parseInt(realInformation[1]));
                 }
