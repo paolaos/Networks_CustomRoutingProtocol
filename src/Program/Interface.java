@@ -39,10 +39,9 @@ public class Interface extends Node {
         System.out.println("Cuál es el puerto de su dispatcher?");
         String dispatcherPort = scanner.next();
         this.ipTable.put(virtualDispatcherIpAddress, "dispatcher");
-        this.addressLocator.put(virtualDispatcherIpAddress, realDispatcherIpAddress + ";" + dispatcherPort);
-        String stringMessage = this.createMessage(virtualDispatcherIpAddress, 0, "", this.macAddress + " " + this.realIpAddress + ";" + this.realReceivingPort);
-        Message message = this.toolbox.convertStringToMessage(stringMessage);
-        this.processMessage(message);
+        this.addressLocator.put("dispatcher", realDispatcherIpAddress + ";" + dispatcherPort);
+        String stringMessage = this.createMessage(virtualDispatcherIpAddress, 0, "", this.macAddress + " " + this.realIpAddress + "," + this.realReceivingPort);
+        this.send("dispatcher", stringMessage, realDispatcherIpAddress, Integer.parseInt(dispatcherPort));
 
 
         System.out.println("Digite 0 si usted es un nodo router, o 1 si usted es un nodo terminal.");

@@ -33,7 +33,7 @@ public class Controller {
 
             ordinaryThread = new Broadcaster("ordinarySection", inbox);
             try {
-                ordinaryThread.sleep(1000);
+                ordinaryThread.sleep(10000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
