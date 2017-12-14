@@ -26,9 +26,9 @@ public class Toolbox {
 
         result += String.valueOf(message.getAction());
 
-        StringBuilder tempActionIp = new StringBuilder("000");
+        StringBuilder tempActionIp = new StringBuilder("");
 
-        if(message.getAction() <= 2 && message.getAction() >= 1) {
+        if(message.getAction() == 1) {
             for (int i : message.getActionIp()) {
                 tempActionIp.append(String.valueOf(i)).append(".");
 
@@ -36,9 +36,11 @@ public class Toolbox {
 
             tempActionIp = new StringBuilder(tempActionIp.substring(0, tempActionIp.length() - 1));
 
+        } else {
+            tempActionIp = new StringBuilder("000");
         }
 
-        result += tempActionIp;
+        result += this.countZeroesIp(tempActionIp.toString());
         result += message.getMessage();
         return result;
 
