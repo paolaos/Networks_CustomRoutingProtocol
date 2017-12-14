@@ -16,7 +16,7 @@ public class Messenger extends Node {
 
     }
 
-    /*protected void prepare() {
+    protected void prepare() {
         Scanner scanner = new Scanner(System.in);
         System.out.printf("Indique cuál es su dirección IP (virtual)");
         this.virtualIpAddress = scanner.next();
@@ -118,9 +118,9 @@ public class Messenger extends Node {
             }
         }
 
-    }*/
+    }
 
-    protected void prepare() {
+    /*protected void prepare() {
         Scanner scanner = new Scanner(System.in);
         System.out.printf("Indique cuál es su dirección IP (virtual)");
         this.virtualIpAddress = "123.45.67.7";
@@ -222,7 +222,7 @@ public class Messenger extends Node {
             }
         }
 
-    }
+    }*/
 
     protected synchronized void processMessage(Message message){
         String messageReceiverIp = toolbox.convertIpToString(message.getReceiverIp());
