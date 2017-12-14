@@ -61,7 +61,7 @@ public class Toolbox {
         int[] actionIp = new int[4];
         String message;
 
-        if(action <= 2 && action != 0) {
+        if(action == 1) {
             offset = 0;
             String actionIpString = stringMessage.substring(25, 37);
             for(int i = 0 ; i < 4; i++) {
