@@ -21,7 +21,7 @@ public class Messenger extends Node {
         System.out.printf("Indique cuál es su dirección IP (virtual)");
         this.virtualIpAddress = scanner.next();
         System.out.println("Cuál es la dirección IP de su red? Solo se aceptan direcciones B, lo lamento profe :(");
-        int networkAddress = scanner.nextInt();
+        String networkAddress = scanner.next();
         System.out.println("Cuál es su dirección IP (real)?");
         this.realIpAddress = scanner.next();
         System.out.println("Cuál es su MAC address virtual?");
