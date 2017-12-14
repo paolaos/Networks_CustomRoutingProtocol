@@ -111,7 +111,7 @@ public class Router extends Interface {
             }
         } else {
             if(getName().equals("logActivation")) try {
-                sleep(20000);
+                sleep(35000);
                 while (true) {
                     System.out.println(this.printLog());
                     sleep(5000);
@@ -120,6 +120,7 @@ public class Router extends Interface {
                 e.printStackTrace();
             } else {
                 if(getName().equals("messageProcessing")) {
+                    this.currentBufferLog.clear();
                     while(true) {
                         if(!this.currentBufferLog.isEmpty()) {
                             Map.Entry<Date, Integer> lastEntry;
@@ -155,7 +156,7 @@ public class Router extends Interface {
 
     protected void processMessage(Message message) {
         switch (message.getAction()) {
-            case 1: //entra networkAddress macAddress realIpAddress,realSendingPort
+            case 2: //entra networkAddress macAddress realIpAddress,realSendingPort
                 String[] splitString = message.getMessage().split(" ");
                 this.addressLocator.put(splitString[0], splitString[1]);
                 this.ipTable.put(splitString[1], splitString[2]);

@@ -60,7 +60,7 @@ public class Messenger extends Node {
                 String routerPort = scanner.next();
                 this.addressLocator.put(routerMacAddress, routerRealIpAddress + "," + routerPort);
                 if(result == 1) {
-                    stringMessage = this.createMessage(routerVirtualIpAddress, 1, "", this.macAddress + " " + this.realIpAddress + "," + this.realReceivingPort);
+                    stringMessage = this.createMessage(routerVirtualIpAddress, 2, "", this.macAddress + " " + this.realIpAddress + "," + this.realReceivingPort);
                     this.send(routerMacAddress, stringMessage, routerRealIpAddress, Integer.parseInt(routerPort));
 
                 }
