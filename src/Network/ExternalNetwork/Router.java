@@ -81,6 +81,7 @@ public class Router extends Interface {
                                 int result = lastEntry.getValue();
                                 this.processMessage(this.buffer.get(result).getEnvelope().getMessage());
                                 this.currentBufferLog.remove(lastEntry.getKey());
+                                this.buffer.get(result).setState(BufferNodeState.VACANT);
                             }
                         }
                     }
