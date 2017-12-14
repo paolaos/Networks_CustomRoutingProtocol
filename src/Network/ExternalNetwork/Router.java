@@ -12,67 +12,18 @@ import java.net.Socket;
 import java.util.*;
 
 public class Router extends Interface {
-    private class BufferNode {
-        //algoritmo, clock
-        private Envelope envelope;
-        private BufferNodeState state;
-        private Date timestamp;
-        private int id;
 
-
-        void setId(int id) {
-            this.id = id;
-        }
-
-        void setState(BufferNodeState state) {
-            this.state = state;
-        }
-
-        void setEnvelope(Envelope envelope) {
-            this.envelope = envelope;
-        }
-
-        void setTimestamp(Date timestamp) {
-            this.timestamp = timestamp;
-        }
-
-        Envelope getEnvelope() {
-            return envelope;
-        }
-
-        BufferNodeState getState() {
-            return state;
-        }
-
-        Date getTimestamp() {
-            return timestamp;
-        }
-
-        int getId() {
-            return id;
-        }
-    }
     private int waitingTime;
     private List<BufferNode> buffer;
     private NavigableMap<Date, Integer> currentBufferLog;
 
-    public Router(String threadName, NavigableMap<Date, Integer> currentBufferLog) {
+    public Router(String threadName, NavigableMap<Date, Integer> currentBufferLog, List<BufferNode> buffer) {
         super(threadName);
         this.toolbox = new Toolbox();
         this.addressLocator = new TreeMap<>();
         this.ipTable = new TreeMap<>();
-        buffer = new LinkedList<>();
+        this.buffer = buffer;
         this.currentBufferLog = currentBufferLog;
-        for(int i = 0; i < 10; i++) {
-            BufferNode temp = new BufferNode();
-            temp.setId(i);
-            temp.setState(BufferNodeState.VACANT);
-            temp.setTimestamp(new Date());
-            buffer.add(temp);
-            currentBufferLog.put(temp.getTimestamp(), temp.getId());
-
-        }
-
 
     }
 
@@ -99,6 +50,7 @@ public class Router extends Interface {
                     envelope.setReceiver(inputContent[1]);
                     envelope.setMessage(toolbox.convertStringToMessage(inputContent[2]));
                     this.buffer.get(position).setEnvelope(envelope);
+                    this.buffer.get(position).setState(BufferNodeState.BUSY);
                     Date now = new Date();
                     this.buffer.get(position).setTimestamp(now);
                     synchronized (this) {

@@ -20,6 +20,8 @@ public class Messenger extends Node {
         Scanner scanner = new Scanner(System.in);
         System.out.printf("Indique cuál es su dirección IP (virtual)");
         this.virtualIpAddress = scanner.next();
+        System.out.println("Cuál es la dirección IP de su red? Solo se aceptan direcciones B, lo lamento profe :(");
+        int networkAddress = scanner.nextInt();
         System.out.println("Cuál es su dirección IP (real)?");
         this.realIpAddress = scanner.next();
         System.out.println("Cuál es su MAC address virtual?");
@@ -38,7 +40,7 @@ public class Messenger extends Node {
         String broadcasterPort = scanner.next();
         this.ipTable.put(virtualDispatcherIpAddress, "broadcaster");
         this.addressLocator.put("broadcaster", realDispatcherIpAddress + "," + broadcasterPort);
-        String stringMessage = this.createMessage(virtualDispatcherIpAddress, 0, "", this.macAddress + " " + this.realIpAddress + "," + this.realReceivingPort);
+        String stringMessage = this.createMessage(virtualDispatcherIpAddress, 0, "", networkAddress + " " + this.macAddress + " " + this.realIpAddress + "," + this.realReceivingPort);
         this.send("broadcaster", stringMessage, realDispatcherIpAddress, Integer.parseInt(broadcasterPort));
 
         System.out.println("Ahora hay que agregar a sus vecinos router o interfaces router. Presione 1 para agregar, o 0 para omitir.");
@@ -60,6 +62,7 @@ public class Messenger extends Node {
                 String routerPort = scanner.next();
                 this.addressLocator.put(routerMacAddress, routerRealIpAddress + "," + routerPort);
                 if(result == 1) {
+
                     stringMessage = this.createMessage(routerVirtualIpAddress, 2, "", this.macAddress + " " + this.realIpAddress + "," + this.realReceivingPort);
                     this.send(routerMacAddress, stringMessage, routerRealIpAddress, Integer.parseInt(routerPort));
 
