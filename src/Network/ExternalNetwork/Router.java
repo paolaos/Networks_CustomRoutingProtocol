@@ -17,11 +17,8 @@ public class Router extends Interface {
     private List<BufferNode> buffer;
     private NavigableMap<Date, Integer> currentBufferLog;
 
-    public Router(String threadName, NavigableMap<Date, Integer> currentBufferLog, List<BufferNode> buffer) {
-        super(threadName);
-        this.toolbox = new Toolbox();
-        this.addressLocator = new TreeMap<>();
-        this.ipTable = new TreeMap<>();
+    public Router(String threadName, Map<String, String> addressLocator, Map<String, String> ipTable, NavigableMap<Date, Integer> currentBufferLog, List<BufferNode> buffer) {
+        super(threadName, addressLocator, ipTable);
         this.buffer = buffer;
         this.currentBufferLog = currentBufferLog;
 
@@ -74,6 +71,7 @@ public class Router extends Interface {
                 if(getName().equals("messageProcessing")) {
                     this.currentBufferLog.clear();
                     while(true) {
+                        try {
                         if(!this.currentBufferLog.isEmpty()) {
                             Map.Entry<Date, Integer> lastEntry;
                             synchronized (this) {
@@ -83,6 +81,12 @@ public class Router extends Interface {
                                 this.currentBufferLog.remove(lastEntry.getKey());
                                 this.buffer.get(result).setState(BufferNodeState.VACANT);
                             }
+                        }
+
+                        sleep(1000);
+                        
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
                     }
                 }

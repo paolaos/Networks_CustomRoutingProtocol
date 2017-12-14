@@ -17,12 +17,9 @@ import java.util.*;
 public abstract class Node extends Interface {
     Queue<Envelope> inbox;
 
-    public Node (String threadName, ArrayDeque<Envelope> inbox){
-        super(threadName);
+    public Node (String threadName, ArrayDeque<Envelope> inbox, Map<String, String> addressLocator, Map<String, String> ipTable){
+        super(threadName, addressLocator, ipTable);
         this.inbox = inbox;
-        this.toolbox = new Toolbox();
-        this.addressLocator = new TreeMap<>();
-        this.ipTable = new TreeMap<>();
     }
 
     public void run(){
@@ -44,7 +41,7 @@ public abstract class Node extends Interface {
                     envelope.setSender(inputContent[0]);
                     envelope.setReceiver(inputContent[1]);
                     envelope.setMessage(toolbox.convertStringToMessage(inputContent[2]));
-                    this.inbox.add(envelope);
+                    this.addToInbox(envelope);
                     clientSocket.close();
 
                 }
@@ -69,8 +66,14 @@ public abstract class Node extends Interface {
 
     void wakeUp(){
         System.out.println("Waking up...");
-        while(true)
-            this.checkMessages();
+        try {
+            while(true) {
+                this.checkMessages();
+                sleep(1000);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
     }
 

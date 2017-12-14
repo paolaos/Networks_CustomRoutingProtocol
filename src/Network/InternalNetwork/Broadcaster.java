@@ -11,13 +11,9 @@ import java.util.TreeMap;
 
 public class Broadcaster extends Node {
 
-    public Broadcaster(String threadName, ArrayDeque<Envelope> inbox) {
-        super(threadName, inbox);
-        this.inbox = inbox;
-        this.toolbox = new Toolbox();
-        this.addressLocator = new TreeMap<>();
-        this.ipTable = new TreeMap<>();
 
+    public Broadcaster(String threadName, ArrayDeque<Envelope> inbox, Map<String, String> addressLocator, Map<String, String> ipTable) {
+        super(threadName, inbox, addressLocator, ipTable);
     }
 
     protected void prepare(){

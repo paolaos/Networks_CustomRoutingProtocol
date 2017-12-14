@@ -4,6 +4,8 @@ import java.util.*;
 
 public class ExternalNetworkController {
     public synchronized void run() {
+        Map<String, String> ipTable = new TreeMap<>();
+        Map<String, String> addressLocator = new TreeMap<>();
         NavigableMap<Date, Integer> currentBufferLog = new TreeMap<>();
         List<BufferNode> buffer = new LinkedList<>();
         for(int i = 0; i < 10; i++) {
@@ -20,9 +22,9 @@ public class ExternalNetworkController {
         Thread logActivation;
         Thread messageProcessing;
 
-        serverActivation = new Router("serverActivation", currentBufferLog, buffer);
-        logActivation = new Router("logActivation", currentBufferLog, buffer);
-        messageProcessing = new Router("messageProcessing", currentBufferLog, buffer);
+        serverActivation = new Router("serverActivation", addressLocator, ipTable, currentBufferLog, buffer);
+        logActivation = new Router("logActivation", addressLocator, ipTable, currentBufferLog, buffer);
+        messageProcessing = new Router("messageProcessing", addressLocator, ipTable, currentBufferLog, buffer);
 
         serverActivation.start();
         logActivation.start();

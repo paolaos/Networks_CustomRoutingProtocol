@@ -22,8 +22,11 @@ public abstract class Interface extends Thread {
     protected Map<String, String> addressLocator;
     protected Map<String, String> ipTable;
 
-    public Interface(String threadName){
+    public Interface(String threadName, Map<String, String> addressLocator, Map<String, String> ipTable){
         super(threadName);
+        this.addressLocator = addressLocator;
+        this.ipTable = ipTable;
+        this.toolbox = new Toolbox();
     }
 
     public abstract void run();
