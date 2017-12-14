@@ -26,8 +26,10 @@ public class Router extends Interface {
 
     public void run() {
         if(getName().equals("serverActivation")) {
-            this.prepare();
             try {
+                Scanner scanner = new Scanner(System.in);
+                System.out.println("Digite el puerto para recibir mensajes. ");
+                this.realReceivingPort = scanner.next();
                 serverSocket = new ServerSocket(Integer.parseInt(this.realReceivingPort));
                 while (true) {
                     Socket clientSocket = serverSocket.accept();
@@ -69,6 +71,12 @@ public class Router extends Interface {
                 e.printStackTrace();
             } else {
                 if(getName().equals("messageProcessing")) {
+                    try {
+                        sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    this.prepare();
                     this.currentBufferLog.clear();
                     while(true) {
                         try {
@@ -124,9 +132,9 @@ public class Router extends Interface {
                     int[] requestedIp = message.getReceiverIp();
                     String requestedNetwork = String.valueOf(requestedIp[0]) + "." + String.valueOf(requestedIp[1]) + ".0.0";
                     if(this.addressLocator.containsKey(requestedNetwork)) {
-                        String macAddress = this.addressLocator.get(requestedNetwork);
-                        String[] realAddressAndPort = this.ipTable.get(macAddress).split(",");
-                        this.send(macAddress, message.getMessage(), realAddressAndPort[0], Integer.parseInt(realAddressAndPort[1]));
+                        String requestedAddress = this.addressLocator.get(requestedNetwork);
+                        String[] realAddressAndPort = this.ipTable.get(requestedAddress).split(",");
+                        this.send(requestedAddress, toolbox.convertMessageToString(message), realAddressAndPort[0], Integer.parseInt(realAddressAndPort[1]));
 
                     } else {
                         System.err.println("Couldn't find address " + requestedNetwork);
