@@ -42,7 +42,7 @@ public class Broadcaster extends Node {
             case 1: //BROADCAST
                 for(Map.Entry<String, String> entry : addressLocator.entrySet()) {
                     String[] realInformation = entry.getValue().split(",");
-                    this.send(entry.getKey(), message.getMessage(), realInformation[0], Integer.parseInt(realInformation[1]));
+                    this.send(entry.getKey(), toolbox.convertMessageToString(message), realInformation[0], Integer.parseInt(realInformation[1]));
                 }
                 break;
         }
