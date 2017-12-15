@@ -182,7 +182,7 @@ public class Router extends Interface {
         return result;
     }
 
-    
+
     private String printLog(){
         return this.currentBufferLog.toString();
     }
