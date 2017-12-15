@@ -1,5 +1,8 @@
 package Network.Message;
 
+/**
+ * Manipulable format for messages in all networks. Standard definition was placed in the first part of the assignment.
+ */
 public class Message {
     private int[] senderIp;
     private int[] receiverIp;

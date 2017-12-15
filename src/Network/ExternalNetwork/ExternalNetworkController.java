@@ -2,6 +2,9 @@ package Network.ExternalNetwork;
 import java.util.Date;
 import java.util.*;
 
+/**
+ * Controller class of the whole ExternalNetwork package, called by the Controller method
+ */
 public class ExternalNetworkController {
     public synchronized void run() {
         Map<String, String> ipTable = new TreeMap<>();

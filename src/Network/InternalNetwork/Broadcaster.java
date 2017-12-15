@@ -9,6 +9,10 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
 
+/**
+ * This class is the implementation of the broadcaster interface, which is mainly in charge of storing location
+ * information from other interfaces in the network.
+ */
 public class Broadcaster extends Node {
 
 

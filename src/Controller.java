@@ -3,6 +3,9 @@ import Network.InternalNetwork.InternalNetworkController;
 
 import java.util.Scanner;
 
+/**
+ * This class is in charge of initializing the user-defined interface and all its necessary parameters.
+ */
 public class Controller {
     public void run(){
         Scanner scanner = new Scanner(System.in);

@@ -6,6 +6,10 @@ import Network.Toolbox.*;
 
 import java.util.*;
 
+/**
+ * This interface is specialized in sending and receiving messages from
+ * other interfaces, whether that is internal or external.
+ */
 public class Messenger extends Node {
 
 
@@ -91,8 +95,23 @@ public class Messenger extends Node {
         }
 
 
-        System.out.println("Presione 1 para preparar un mensaje, o bien presione 0 para omitir");
+        System.out.println("Presione 2 para un chorro de mensajes,  1 para preparar un mensaje, o bien presione 0 para omitir");
         int response = scanner.nextInt();
+
+        if(response == 2) {
+            System.out.println("Cuántos mensajes?");
+            int amountMessages = scanner.nextInt();
+            System.out.println("Escriba la dirección IP virtual de la persona a la que le quiere mandar un mensaje");
+            String ipReceiver = scanner.next();
+            for(int i = 0; i < amountMessages; i++) {
+                String myMessage = this.createMessage(ipReceiver, 0, "", "prueba " + i);
+                Envelope tempEnvelope = new InternalEnvelope();
+                tempEnvelope.setSender(this.macAddress);
+                tempEnvelope.setReceiver(this.macAddress);
+                tempEnvelope.setMessage(toolbox.convertStringToMessage(myMessage));
+                this.addToInbox(tempEnvelope);
+            }
+        }
         if(response == 1) {
             while(response == 1) {
                 System.out.println("Escriba la dirección IP virtual de la persona a la que le quiere mandar un mensaje");
@@ -201,6 +220,14 @@ public class Messenger extends Node {
 
     }
 
+    /**
+     * Shortcut method used to create a message from scratch.
+     * @param ipReceiver the virtual IP of who will receive the message
+     * @param actionNumber the number of the action to be taken
+     * @param ipAction the IP of the action, in case it is number one
+     * @param messageBody the content of the message
+     * @return a compacted String with the whole message
+     */
     private String createMessage(String ipReceiver, int actionNumber, String ipAction, String messageBody) {
         String result = "";
         result += toolbox.countZeroesIp(this.virtualIpAddress);

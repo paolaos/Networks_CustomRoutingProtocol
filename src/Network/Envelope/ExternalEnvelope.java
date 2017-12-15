@@ -1,6 +1,9 @@
 package Network.Envelope;
 import Network.Message.Message;
-//lo que se utiliza en Bolinchas
+
+/**
+ * Envelope format that was previously built with bolinchas team.
+ */
 public class ExternalEnvelope extends Envelope {
     public ExternalEnvelope(){
 

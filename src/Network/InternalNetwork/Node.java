@@ -14,6 +14,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
+/**
+ * Main abstract interface for the internal network. The biggest difference is the new inbox queue in charge of storing
+ * all messages to be processed.
+ */
 public abstract class Node extends Interface {
     Queue<Envelope> inbox;
 

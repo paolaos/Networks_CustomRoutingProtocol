@@ -4,13 +4,17 @@ import Network.Envelope.Envelope;
 import Network.Envelope.InternalEnvelope;
 import Network.Interface;
 import Network.Message.Message;
-import Network.Toolbox.Toolbox;
 
 import java.io.DataInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
+/**
+ * Interface in charge of being the intermediary between different external networks. It differenciates from Interface
+ * since it also contains a buffer list, an ordered map with current buffer timestamps, and an additional thread that
+ * prints this log.
+ */
 public class Router extends Interface {
 
     private int waitingTime;
@@ -148,6 +152,10 @@ public class Router extends Interface {
         }
     }
 
+    /**
+     * Linearly picks a place in the buffer in order to store a message
+     * @return the id of the buffer used to store the new envelope. If all spots are busy, returns -1.
+     */
     private int canBeStored(){
         int result = -1;
         for(BufferNode bn : buffer) {
@@ -160,6 +168,11 @@ public class Router extends Interface {
         return result;
     }
 
+    /**
+     * Clock replacement algorithm that forces the cancellation of operations over any specific place in the
+     * buffer
+     * @return the id of the buffer that was forced to cancel its storage.
+     */
     private int forceASpot(){
         int result = this.currentBufferLog.get(this.currentBufferLog.firstKey());
         synchronized (this) {
@@ -169,6 +182,7 @@ public class Router extends Interface {
         return result;
     }
 
+    
     private String printLog(){
         return this.currentBufferLog.toString();
     }

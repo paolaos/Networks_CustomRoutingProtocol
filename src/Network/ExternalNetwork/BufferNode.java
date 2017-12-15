@@ -4,8 +4,11 @@ import Network.Envelope.Envelope;
 
 import java.util.Date;
 
+/**
+ * All basic components of each node from the buffer.
+ */
 public class BufferNode {
-    //algoritmo, clock
+    //replacement algorithm: clock
     private Envelope envelope;
     private BufferNodeState state;
     private Date timestamp;

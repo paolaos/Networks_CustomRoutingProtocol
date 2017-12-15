@@ -2,6 +2,9 @@ package Network.Envelope;
 
 import Network.Message.Message;
 
+/**
+ * Envelope implementation for this project.
+ */
 public class InternalEnvelope extends Envelope {
 
     public InternalEnvelope(){

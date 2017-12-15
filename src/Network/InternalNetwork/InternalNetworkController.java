@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
 
+/**
+ * Controller class of the whole InternalNetwork package, called by the Controller method
+ */
 public class InternalNetworkController {
     public synchronized void run() {
         ArrayDeque<Envelope> inbox = new ArrayDeque<>();

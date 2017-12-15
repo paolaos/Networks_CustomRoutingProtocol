@@ -2,8 +2,11 @@ package Network.Toolbox;
 
 import Network.Message.Message;
 
-
-//todo modificaciones de StringBuilder, hacer pruebas!
+/**
+ * This class has all recycled methods that involve logistics when encoding
+ * and decoding messages, such as adding zeroes, converting messages into strings
+ * and vice versa, etc...
+ */
 public class Toolbox {
 
     public String convertMessageToString(Message message) {
