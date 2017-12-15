@@ -1,0 +1,9 @@
+1. Navegar hasta el src mediante la línea de comandos.
+2. Compilar código utilizando javac *.java desde la raíz del código fuente.
+3. Seguir las instrucciones guiadas por la interfaz para poder introducir 
+el tipo de interfaz, las IPs virtuales y reales, el MAC address, etc.
+
+OJO: aún no hay documento de manual de pruebas dado a que este proyecto 
+todavía no tenía pruebas concretas en el momento que fue presentado a la 
+profe y el asistente. Pronto se subirá una versión concreta con sus 
+respectivas pruebas.
